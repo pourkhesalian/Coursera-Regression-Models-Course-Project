@@ -36,7 +36,7 @@ A dataset that is included in R is called "mtcars". As the name implies, the dat
 
 ### Basic Exploratory Analysis
 As mentioned, the dataset has `r ncol(mtcars)` columns/variables and `r nrow(mtcars)` rows/observations. The below table shows a basic exploratory of the data. The table shows the correlation between mpg and other variables in the data. It can be seen that mpg has a strong negative correlation with wt, disp, cyl, hp, and carb, and a positive correlation with am, drat, vs and qsec. It seems that some of the variables that are in strong correlation with mpg are inter-correlated. For example, the displacement volume of the engine of a vehicle is directly proportional to the number of cylinders the vehicle has and so on.    
-```{r cor, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
+```{r cor, echo=FALSE, message=FALSE, warning=FALSE}
 round(cor(mtcars)[1,], 2) 
 ```
 ```{r mean, echo=FALSE}
@@ -71,7 +71,7 @@ most.eff.model
 
 ```
 Thus, the most parsimonious yet efficient model is the below model:
-```{r most.eff.model.anls.1, echo=FALSE, comment=NA}
+```{r most.eff.model.anls.1, echo=FALSE}
 most.eff.model$call
 ```
 As it can be seen in the model, "am" is considered an independent explanatory variable. In other word, it definitely has a statistically significant effect on the response variable which in this case is "mpg". The latter model has an R-square of `r round(summary(most.eff.model)[[9]], 2)` meaning that it can explain  `r round(summary(most.eff.model)[[9]], 2)*100` percent of the variations of mpg. Now, let's compare the two models using anova:
