@@ -90,7 +90,7 @@ Based on the above analysis, it is apparent that cars with manual transmission c
 
 ### Appendix
 
-```{r fig1, echo=FALSE, message=FALSE, warning=FALSE, fig.height=3}
+```{r fig1, echo=FALSE, message=FALSE, warning=FALSE, fig.height=5}
 mtcars$am<-as.factor(mtcars$am)
 levels(mtcars$am)<-c("Auto", "Manual")
 
@@ -101,14 +101,8 @@ library(dplyr);library(tidyr); library(ggplot2)
 \begin{center}
 Figure 1. Mileage vs transmission type   
 \end{center}  
-
-The output of models comparisons:
-```{r comparison}
-most.eff.model <- step(lm(data = mtcars, mpg ~ wt+cyl+qsec+am+hp), direction = "both")
-
-```
-
-```{r fig.2, fig.height= 5}
+\pagebreak
+```{r fig.2, fig.height= 7}
 par(mfrow=c(2,2))
 plot(lm(mpg~am,data = mtcars))
 ```
@@ -117,7 +111,7 @@ Figure 2. model 1 residuals
 \end{center}
 \pagebreak
 
-```{r fig.3, fig.height= 5}
+```{r fig.3, fig.height= 7}
 par(mfrow=c(2,2))
 plot(most.eff.model)
 ```
