@@ -11,7 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ### Executive Summary
-In this report, first a basic exploratory analysis is performed on the "mtcars" dataset in R, and then, a statistical inferential analysis is carried out. A number of regression models are also checked to be able to fine the most efficient model. In the end, it is concluded that fuel consumption of manual cars is statistically significantly less than that of automatic vehicles. The regression models are compared in terms of complexity and efficiency and it is found out the most important influencing factors on fuel consumption are gearbox type (manual or automatic), the weight of the vehicle and the celerity of the vehicle.
+In this report, first a basic exploratory analysis is performed on the "mtcars" dataset in R, and then, a statistical inferential analysis is carried out. A number of regression models are also checked to be able to fine the most efficient model. In the end, it is concluded that fuel consumption of manual cars is statistically significantly less than that of automatic vehicles. The regression models are compared in terms of complexity and efficiency and it is found out the most important influencing factors on fuel consumption are gearbox type (manual or automatic), the weight of the vehicle and the celerity of the vehicle. Based on the above analysis, it is apparent that cars with manual transmission consume statistically significantly less fuel than that of automatic cars. However considering other influencing variables such as wt and
+qsec the difference is not as significant.  
 
 ```{r load, include=FALSE}
 data("mtcars")
