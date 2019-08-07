@@ -124,5 +124,5 @@ plot(most.eff.model)
 \begin{center}
 Figure 3. The most efficient model residuals   
 \end{center}
-The Rmd file to generate this report in word docx format can be found  [here](https://github.com/pourkhesalian/statistical-inference-course-project).
+The Rmd file to generate this report can be found  [here](https://github.com/pourkhesalian/Coursera-Regression-Models-Course-Project).
 
