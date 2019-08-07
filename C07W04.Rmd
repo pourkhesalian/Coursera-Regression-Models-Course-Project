@@ -1,0 +1,128 @@
+---
+title: 'Regression Models Course Project: Auto VS Manual, Which One Is More Fuel Efficient?'
+author: "Ali Pourkhesalian"
+date: "07/08/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Executive Summary
+In this report, first a basic exploratory analysis is performed on the "mtcars" dataset in R, and then, a statistical inferential analysis is carried out. A number of regression models are also checked to be able to fine the most efficient model. In the end, it is concluded that fuel consumption of manual cars is statistically significantly less than that of automatic vehicles. The regression models are compared in terms of complexity and efficiency and it is found out the most important influencing factors on fuel consumption are gearbox type (manual or automatic), the weight of the vehicle and the celerity of the vehicle.
+
+```{r load, include=FALSE}
+data("mtcars")
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(reshape2)
+```
+### Data set
+A dataset that is included in R is called "mtcars". As the name implies, the dataset includes data on `r nrow(mtcars)` of cars.  The dataset has `r ncol(mtcars)` column which are listed below with a brief description:  
+1. mpg	Miles/(US) gallon, 
+2. cyl	Number of cylinders,
+3. disp	Displacement (cu.in.), 4. hp	Gross horsepower  
+5. drat	Rear axle ratio,
+6. wt	Weight (1000 lbs), 
+7. qsec	1/4 mile time, 
+8. vs	Engine (0 = V-shaped, 1 = straight),
+9. am	Transmission (0 = automatic, 1 = manual), 
+10. gear	Number of forward gears, 
+11. carb	Number of carburetors,  
+
+### Basic Exploratory Analysis
+As mentioned, the dataset has `r ncol(mtcars)` columns/variables and `r nrow(mtcars)` rows/observations. The below table shows a basic exploratory of the data. The table shows the correlation between mpg and other variables in the data. It can be seen that mpg has a strong negative correlation with wt, disp, cyl, hp, and carb, and a positive correlation with am, drat, vs and qsec. It seems that some of the variables that are in strong correlation with mpg are inter-correlated. For example, the displacement volume of the engine of a vehicle is directly proportional to the number of cylinders the vehicle has and so on.    
+```{r cor, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
+round(cor(mtcars)[1,], 2) 
+```
+```{r mean, echo=FALSE}
+mtcars$am<-as.factor(mtcars$am)
+levels(mtcars$am)<-c("Auto", "Manual")
+
+```
+
+Figure 1  in the appendix shows a box plot of mpg related to manual and auto vehicle to see if there is any difference at all. As it can be seen in the figure, type of the gearbox system (automatic or manual) seems to affect the fuel consumption of the vehicle as the box-plot clearly shows that the manual vehicle can travel more miles per every gallon of fuel. Let's check the mean as well. The mean and SEM of mileage for manual cars are `r aggregate(mtcars$mpg, by=list(mtcars$am), FUN=function(x){xmean <- mean(x); xsd <- sd(x)/sqrt(nrow(mtcars)); paste( round(xmean,2) )})[[2]][1]` and `r aggregate(mtcars$mpg, by=list(mtcars$am), FUN=function(x){xmean <- mean(x); xsd <- sd(x)/sqrt(nrow(mtcars)); paste( round(xsd,2) )})[[2]][1]` whereas for automatic cars mean and SEM of mileage are `r aggregate(mtcars$mpg, by=list(mtcars$am), FUN=function(x){xmean <- mean(x); xsd <- sd(x)/sqrt(nrow(mtcars)); paste( round(xmean,2) )})[[2]][2]` and `r aggregate(mtcars$mpg, by=list(mtcars$am), FUN=function(x){xmean <- mean(x); xsd <- sd(x)/sqrt(nrow(mtcars)); paste( round(xsd,2) )})[[2]][2]`. However, to make any further inference, one has to carry out a regression analysis on the data to make sure that the difference in the mileage is in fact statistically significant.
+
+
+### Regression Analysis
+In this section a few models are fit onto the mtcars dataset and then the models are analysed for efficiency to see how considering the "am" variable in the models can affect the overall efficiency of the model.
+
+
+#### Models
+
+Let's first check the simplest model, a linear model of mpg as the response variable and am as the explanatory variable.  
+```{r sim.model, echo=TRUE}
+simp.model <- lm(data= mtcars, mpg~am)
+```
+
+
+The model has an adjusted R square of, `r round(summary(lm(data= mtcars, mpg~am))[[9]],2)`, showing that "am" can explain `r round(summary(lm(data= mtcars, mpg~am))[[9]],2)*100`  percent of the variation in "mpg". Now let's find the most efficient model and study it in more details. 
+```{r eff.model, echo=TRUE, eval=FALSE}
+most.eff.model <- step(lm(mpg ~ ., data = mtcars), direction = "both")
+```
+```{r most.eff.model.anls, include=FALSE,message=FALSE, warning=FALSE}
+
+most.eff.model <- step(lm(mpg ~ ., data = mtcars), direction = "both")
+most.eff.model
+
+```
+Thus, the most parsimonious yet efficient model is the below model:
+```{r most.eff.model.anls.1, echo=FALSE, comment=NA}
+most.eff.model$call
+```
+As it can be seen in the model, "am" is considered an independent explanatory variable. In other word, it definitely has a statistically significant effect on the response variable which in this case is "mpg". The latter model has an R-square of `r round(summary(most.eff.model)[[9]], 2)` meaning that it can explain  `r round(summary(most.eff.model)[[9]], 2)*100` percent of the variations of mpg. Now, let's compare the two models using anova:
+
+```{r analysis}
+anova(simp.model, most.eff.model)
+
+
+```
+The above comparison shows that based on the p-value being very small, the latter model is statistically significantly different from the former model and thus the null hypothesis of the two models being the same is rejected. Also, the RSS of the models show that the sum of square residuals in the latter model is less than that of the former.  
+
+Using the simple model, the difference of mpg between automatic and manual cars is calculated to be `r as.numeric(aggregate(mtcars$mpg, by=list(mtcars$am), FUN=function(x){xmean <- mean(x); xsd <- sd(x)/sqrt(nrow(mtcars)); paste( round(xmean,2) )})[[2]][2])-as.numeric(aggregate(mtcars$mpg, by=list(mtcars$am), FUN=function(x){xmean <- mean(x); xsd <- sd(x)/sqrt(nrow(mtcars)); paste( round(xmean,2) )})[[2]][1])`, however, the next model which takes into account "wt", "qsec" and "am" states that mpg of automatic cars is `r round(most.eff.model$coefficients[[4]],2)`. Although the latter difference in mpg is much less than that of the simple model, it is still statistically significant.
+
+### Conclusion
+Based on the above analysis, it is apparent that cars with manual transmission consume statistically significantly less fuel than that of automatic cars. However considering other influencing variables such as wt and qsec the difference is not as significant.  
+
+### Appendix
+
+```{r fig1, echo=FALSE, message=FALSE, warning=FALSE, fig.height=3}
+mtcars$am<-as.factor(mtcars$am)
+levels(mtcars$am)<-c("Auto", "Manual")
+
+library(dplyr);library(tidyr); library(ggplot2)
+    ggplot(mtcars)+ geom_boxplot(aes(am, mpg))+ theme_bw()+xlab('Transmission Type')+ylab('Mileage (mile/gal)')
+  
+```
+\begin{center}
+Figure 1. Mileage vs transmission type   
+\end{center}  
+
+The output of models comparisons:
+```{r comparison}
+most.eff.model <- step(lm(data = mtcars, mpg ~ wt+cyl+qsec+am+hp), direction = "both")
+
+```
+
+```{r fig.2, fig.height= 5}
+par(mfrow=c(2,2))
+plot(lm(mpg~am,data = mtcars))
+```
+\begin{center}
+Figure 2. model 1 residuals   
+\end{center}
+\pagebreak
+
+```{r fig.3, fig.height= 5}
+par(mfrow=c(2,2))
+plot(most.eff.model)
+```
+\begin{center}
+Figure 3. The most efficient model residuals   
+\end{center}
+The Rmd file to generate this report in word docx format can be found  [here](https://github.com/pourkhesalian/statistical-inference-course-project).
+
